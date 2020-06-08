@@ -27,7 +27,6 @@ public class AgendaController {
 	@PostMapping
 	@ApiOperation(value = "Register a new Agenda")
 	public ResponseEntity<AgendaDto> register(@RequestBody @Valid AgendaForm agendaForm) {
-		System.out.println(agendaForm.getName());
 		return ResponseEntity.ok(new AgendaDto(agendaService.save(agendaForm.formtoEntity())));
 	}
 
