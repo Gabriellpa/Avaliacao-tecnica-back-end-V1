@@ -32,3 +32,6 @@
 # 4 TODO
  [ ] 1 - Finalização dos testes da service e controller
  [ ] 2 - Utlização do kafka para publicar mensagens
+
+# 5 Swagger  
+[Swagger](https://api-voting-sessions.herokuapp.com/swagger-ui.html)
