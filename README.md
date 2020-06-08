@@ -29,9 +29,10 @@
 * Postgresql como banco de dados
 * Java 8 utilizando Spring boot
 
-# 4 - TODO
+# 4 - TODO 
  - [ ] 1 - Finalização dos testes da service e controller  
- - [ ] 2 - Utlização do kafka para publicar mensagens
+ - [ ] 2 - Adicionar Logs.
+ - [ ] 3 - Utlização do kafka para publicar mensagens
 
 # 5 - Swagger  
 [Swagger](https://api-voting-sessions.herokuapp.com/swagger-ui.html)
