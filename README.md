@@ -30,7 +30,7 @@
 * Java 8 utilizando Spring boot
 
 # 4 - TODO 
- - [ ] 1 - Finalização dos testes da service e controller  
+ - [x] 1 - Finalização dos testes da service e controller  
  - [ ] 2 - Adicionar Logs.
  - [ ] 3 - Utlização do kafka para publicar mensagens
 
