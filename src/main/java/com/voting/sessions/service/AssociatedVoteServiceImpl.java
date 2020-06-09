@@ -43,7 +43,6 @@ public class AssociatedVoteServiceImpl implements AssociatedVoteService{
 		if(!isCpfValid(associatedVote.getCpf())) {
 			throw new UnableToVoteExecption("Associate is unable to vote.");
 		}
-		log.info("Associate with cpf: [{}] is voting", associatedVote.getCpf());
 		if(haveVotedInAgenda(associatedVote.getCpf(), agendaId)) {
 			throw new VoteAlreadyRegisteredExpcetion(String.format("Vote already registered for associate with cpf: %s", associatedVote.getCpf()));
 		}
