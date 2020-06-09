@@ -2,10 +2,16 @@ package com.voting.sessions.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -113,5 +119,64 @@ public class SessionServiceTest {
 		when(sessionRepository.save(Mockito.any(Session.class))).thenReturn(session);
 
 		assertThrows(NotFoundException.class, () -> sessionServiceImpl.openSession(sessionForm));
+	}
+	
+	@Test
+	public void shoudBeOpenSession() {
+		when(agendaServiceImpl.existsById(Mockito.anyLong())).thenReturn(true);
+		Optional<Session> optionalAgenda = Optional.of(Session.builder().startDateSession(LocalDateTime.now()).endDateSession(LocalDateTime.now().plusMinutes(1)).build());
+		when(sessionRepository.findByAgenda_Id(Mockito.anyLong())).thenReturn(optionalAgenda);
+		
+		assertTrue(sessionServiceImpl.isOpen(Mockito.anyLong()));
+	}
+	
+	@Test
+	public void shoudNotFindSession() {
+		when(agendaServiceImpl.existsById(Mockito.anyLong())).thenReturn(true);
+		assertThrows(NotFoundException.class, () -> sessionServiceImpl.isOpen(Mockito.anyLong()));
+	}
+	
+	@Test
+	public void shoudNotFoundAgendan() {
+		when(agendaServiceImpl.existsById(Mockito.anyLong())).thenReturn(false);
+		assertThrows(NotFoundException.class, () -> sessionServiceImpl.isOpen(Mockito.anyLong()));
+	}
+	
+	@Test
+	public void shoudBeClosedSession() {
+		when(agendaServiceImpl.existsById(Mockito.anyLong())).thenReturn(true);
+		Optional<Session> optionalAgenda = Optional.of(Session.builder().startDateSession(LocalDateTime.now().plusMinutes(1)).endDateSession(LocalDateTime.now()).build());
+		when(sessionRepository.findByAgenda_Id(Mockito.anyLong())).thenReturn(optionalAgenda);
+		
+		assertFalse(sessionServiceImpl.isOpen(Mockito.anyLong()));
+	}
+	
+	@Test
+	public void shoudListCloseSessions() {
+		List<Session> sessions = new ArrayList<Session>();
+		sessions.add(Session.builder().closedSession(false).build());
+		when(sessionRepository.findEndedSessions(Mockito.any(), Mockito.anyBoolean())).thenReturn(sessions);
+		
+		when(sessionRepository.save(Mockito.any())).thenReturn(Session.builder().closedSession(true).build());
+		
+		List<Session> returnedSessions = sessionServiceImpl.closeSessions();
+		
+		assertNotNull(returnedSessions);
+		assertThat(returnedSessions.size(), equalTo(1));
+	}
+	
+	@Test
+	public void shoudList2CloseSessions() {
+		List<Session> sessions = new ArrayList<Session>();
+		sessions.add(Session.builder().closedSession(false).build());
+		sessions.add(Session.builder().closedSession(false).build());
+		when(sessionRepository.findEndedSessions(Mockito.any(), Mockito.anyBoolean())).thenReturn(sessions);
+		
+		when(sessionRepository.save(Mockito.any())).thenReturn(Session.builder().closedSession(true).build());
+		
+		List<Session> returnedSessions = sessionServiceImpl.closeSessions();
+		
+		assertNotNull(returnedSessions);
+		assertThat(returnedSessions.size(), equalTo(2));
 	}
 }
