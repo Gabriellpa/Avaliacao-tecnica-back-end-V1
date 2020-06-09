@@ -43,7 +43,7 @@ public class AssociatedVoteServiceImpl implements AssociatedVoteService{
 		if(!isCpfValid(associatedVote.getCpf())) {
 			throw new UnableToVoteExecption("Associate is unable to vote.");
 		}
-		
+		log.info("Associate with cpf: [{}] is voting", associatedVote.getCpf());
 		if(haveVotedInAgenda(associatedVote.getCpf(), agendaId)) {
 			throw new VoteAlreadyRegisteredExpcetion(String.format("Vote already registered for associate with cpf: %s", associatedVote.getCpf()));
 		}
@@ -67,7 +67,7 @@ public class AssociatedVoteServiceImpl implements AssociatedVoteService{
 		Long countYes = associatedVoteRepository.countByAgenda_IdAndVote(agendaId, VoteType.SIM);
 		Long countNo = associatedVoteRepository.countByAgenda_IdAndVote(agendaId, VoteType.NAO);
 		
-		return AssociatedVoteResultDto.builder().agendaName(agenda.getName()).countYes(countYes).countNo(countNo).isVoteSessionFinsh(isVoteSessionFinsh).result(finalResult(countYes, countNo)).build();
+		return AssociatedVoteResultDto.builder().agendaName(agenda.getName()).countYes(countYes).countNo(countNo).isVoteSessionFinsh(isVoteSessionFinsh).result(finalResult(countYes, countNo, isVoteSessionFinsh)).build();
 	}
 	
 	private boolean isCpfValid(String cpf) {
@@ -80,7 +80,11 @@ public class AssociatedVoteServiceImpl implements AssociatedVoteService{
 		}
 	}
 
-	private String finalResult(Long yes, Long no) {
+	private String finalResult(Long yes, Long no, boolean isVoteSessionFinsh) {
+		if(!isVoteSessionFinsh) {
+			return NOT_DEFINED_YET;
+		}
+		
 		if(yes == no) {
 			return DRAW;
 		} else if (yes > no) {
